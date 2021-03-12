@@ -7,6 +7,12 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
 
   // Use the core translation file. Used mainly for the `Alignment` values.
   var commonTranslation = editor.lang.common;
+  
+  // Set a defaault API key, inherited from the original author.
+  var googleApiKey = 'AIzaSyA9ySM6msnGm0qQB1L1cLTMBdKEUKPySmQ';
+  
+  // Pull in any default settings from the editor's configuration.
+  var config = editor.config;
 
   // Dialog's function callback for the Leaflet Map Widget.
   return {
@@ -38,12 +44,6 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
             // This will override the Google's default placeholder text:
             // 'Enter a location'.
             jQuery('.geocode input').attr('placeholder', pluginTranslation.googleSearchFieldHint);
-
-            var config = editor.config;
-
-            // Default value, but eventually will reach its quota if many users
-            // will just utilize this key instead of creating their own.
-            var googleApiKey = 'AIzaSyA9ySM6msnGm0qQB1L1cLTMBdKEUKPySmQ';
 
             if (typeof config.leaflet_maps_google_api_key != 'undefined' && config.leaflet_maps_google_api_key != '') {
               googleApiKey = config.leaflet_maps_google_api_key;
@@ -238,6 +238,11 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
 
                   this.setValue(currentZoom);
                 }
+                
+                // Use the configured default, if set.
+                else if (config.map_zoom) {
+                  this.setValue(config.map_zoom);
+                }
 
                 // Set the Default Zoom Level value.
                 else {
@@ -296,7 +301,7 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
 
                 if (geocode != '') {
                   // No need to call the encodeURIComponent().
-                  var geocodingRequest = '//maps.googleapis.com/maps/api/geocode/json?address=' + geocode + '&sensor=false';
+                  var geocodingRequest = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + geocode + '&sensor=false&key=' + googleApiKey;
 
                   // Disable the asynchoronous behavior temporarily so that
                   // waiting for results will happen before proceeding
@@ -473,6 +478,11 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
                 }
 
                 // Set the Default alignment value.
+                else if (config.map_alignment){
+                  this.setValue(config.map_alignment);
+                }
+
+                // Set the Default alignment value.
                 else {
                   this.setValue('left');
                 }
@@ -497,6 +507,11 @@ CKEDITOR.dialog.add('leaflet', function(editor) {
                   else {
                     this.setValue('');
                   }
+                }
+
+                // Set the Default alignment value.
+                else if (config.map_responsive == 'on'{
+                  this.setValue('true');
                 }
 
                 // Set the default value for new ones.
